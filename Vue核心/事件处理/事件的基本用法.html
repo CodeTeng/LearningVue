@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>事件的基本用法</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2>欢迎：{{name}}</h2>
+    <button @click="showInfo1">点我提示信息1(不传参)</button>
+    <!--此处的$event是个占个符，表示event参数，防止传入参数时event参数丢失-->
+    <button @click="showInfo2($event, 66)">点我提示信息2(传参)</button>
+</div>
+<script>
+    const vm = new Vue({
+        el: "#app",
+        data() {
+            return {
+                name: 'Teng'
+            }
+        },
+        methods: {
+            showInfo1(event) {
+                // 默认参数有事件源参数
+                console.log(event.target.innerText);
+                console.log(this === vm);
+                alert("同学你好！");
+            },
+            showInfo2(event, number) {
+                console.log(event, number);
+                console.log(event.target.innerText);
+                alert("同学你好！");
+            }
+        }
+    })
+</script>
+</body>
+</html>

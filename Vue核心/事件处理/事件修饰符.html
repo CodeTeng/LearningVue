@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>事件修饰符</title>
+    <script src="../js/vue.js"></script>
+    <style>
+        * {
+            margin-top: 20px;
+        }
+
+        .demo1 {
+            height: 50px;
+            background-color: skyblue;
+        }
+
+        .box1 {
+            padding: 5px;
+            background-color: skyblue;
+        }
+
+        .box2 {
+            padding: 5px;
+            background-color: pink;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--阻止默认事件（常用）-->
+    <a href="https://github.com/CodeTeng" @click.prevent="showInfo">点我提示信息</a>
+
+    <!--组织事件冒泡（常用）-->
+    <div class="demo1" @click="showInfo">
+        <button @click.stop="showInfo">点我提示信息</button>
+    </div>
+
+    <!--事件只触发一次（常用）-->
+    <button @click.once="showInfo">点我提示信息</button>
+
+    <!--使用事件的捕获模式  打开控制台观察输出-->
+    <!--捕获：从外到内    冒泡：从内到外-->
+    <div class="box1" @click.capture="showMsg(1)">
+        div1
+        <div class="box2" @click="showMsg(2)">
+            div2
+        </div>
+    </div>
+
+    <div class="demo1" @click.self="showInfo">
+        <button @click="showInfo">点我提示信息</button>
+    </div>
+</div>
+
+    <script>
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+                    name: "Teng"
+                }
+            },
+            methods: {
+                showInfo(event) {
+                    alert("同学你好！");
+                },
+                showMsg(msg) {
+                    console.log(msg)
+                }
+            }
+        })
+    </script>
+</body>
+</html>
