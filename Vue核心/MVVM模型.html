@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MVVM模型</title>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>Hello,{{name}}</h1>
+    <!--出现在vm属性上以及vm原型上的都可用-->
+    <h1>测试vm属性：{{$el}}</h1>
+    <h1>测试vm原型：{{$emit}}</h1>
+</div>
+<script>
+    const vm = new Vue({
+        el: "#app",
+        data() {
+            return {
+                name: "Teng"
+            }
+        }
+    });
+    console.log(vm);
+</script>
+</body>
+</html>
