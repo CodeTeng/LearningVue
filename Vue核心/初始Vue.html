@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>初始Vue</title>
+    <!--引入js文件-->
+    <script type="text/javascript" src="js/vue.js"></script>
+</head>
+<body>
+<!--先准备一个容器-->
+<div id="app">
+    <!--在{{}}里面要写的时js表达式-->
+    <h1>Hello, {{name.toUpperCase()}}, {{address}}</h1>
+</div>
+<script>
+    Vue.config.productionTip = false; // 阻止Vue启动时生产的提示
+
+    // 创建一个Vue实例
+    new Vue({
+        el: "#app", // el指定当前实例为哪个容器服务，值通常为css选择器字符串
+        data: {     // data表示用于存储数据，数据供el所指定的容器进行使用，值暂时先写成一个对象
+            name: "Teng",
+            address: "郑州"
+        }
+    })
+</script>
+</body>
+</html>
