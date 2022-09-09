@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据绑定</title>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+
+<div id="app">
+    单项数据绑定：<input :value="name" type="text"><br/>
+    双向数据绑定：<input type="text" v-model="name"><br/>
+
+    <!--以下代码是错误的，因为v-model只能用在表单类元素上-->
+<!--    <h2 v-model="name">你好啊</h2>-->
+</div>
+
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            name: "Teng"
+        }
+    });
+</script>
+</body>
+</html>
