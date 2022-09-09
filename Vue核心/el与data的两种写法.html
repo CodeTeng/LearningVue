@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>el与data的两种写法</title>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>你好,{{name}}</h1>
+</div>
+
+<script>
+    const vue = new Vue({
+        // el第一种写法
+        el: "#app",
+        // data的第一种写法：对象式
+        // data: {
+        //     name: "Teng"
+        // }
+
+        // data的第二种写法：函数式
+        data() {
+            // this代表的是Vue实例对象
+            console.log('@@@', this)
+            return {
+                name: "Teng"
+            }
+        }
+    });
+    // 查看vue实例---带$符号的我们都可以使用
+    console.log(vue);
+    // el第二种写法
+    // vue.$mount('#app');
+</script>
+</body>
+</html>
