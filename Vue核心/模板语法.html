@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>模板语法</title>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <h2>插值语法</h2>
+    <h3>你好，{{name}}, {{position.name + position.address}}</h3>
+    <h2>指令语法</h2>
+    <a :href="position.url">点我去看看：{{position.name}}</a>
+</div>
+
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            name: "Teng",
+            position: {
+                name: "全栈",
+                address: "深圳",
+                url: "https://github.com/CodeTeng"
+            }
+        }
+    })
+</script>
+</body>
+</html>
