@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>天气案例-深度监听</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h3>a的值是：{{numbers.a}}</h3>
+    <button @click="numbers.a++">点我让a+1</button>
+    <h3>b的值是：{{numbers.b}}</h3>
+    <button @click="numbers.b++">点我让b+1</button>
+    <button @click="numbers = {a:666,b:888}">彻底替换掉numbers</button>
+    {{numbers.c.d.e}}
+</div>
+<script>
+    const vm = new Vue({
+        el: "#app",
+        data() {
+            return {
+                numbers: {
+                    a: 1,
+                    b: 1,
+                    c: {
+                        d: {
+                            e: 100,
+                        }
+                    }
+                }
+            }
+        },
+        watch: {
+            // 监视多级结构中某个属性的变化
+            'numbers.a': {
+                handler(newValue, oldValue) {
+                    console.log("a被改变了")
+                }
+            },
+            // 监视多级结构中所有属性的变化
+            numbers: {
+                deep: true,
+                handler(newValue, oldValue) {
+                    console.log("numbers改变了");
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

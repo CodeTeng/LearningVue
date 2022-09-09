@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>姓名案例-计算属性实现</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    姓：<input type="text" v-model="firstName"><br/>
+    名：<input type="text" v-model="lastName"><br/>
+    <!--这里修改不会调用fullName的get方法-->
+    测试：<input type="text" v-model="x"><br/>
+    全名：<span>{{fullName}}</span><br/>
+    全名：<span>{{fullName}}</span><br/>
+    全名：<span>{{fullName}}</span><br/>
+    全名：<span>{{fullName}}</span>
+</div>
+<script>
+    const vm = new Vue({
+        el: "#app",
+        data() {
+            return {
+                firstName: "张",
+                lastName: "三",
+                x: "你好"
+            }
+        },
+        computed: {
+            // 全写
+            // fullName: {
+            //     // get有什么作用？当有人读取fullName时，get就会被调用，且返回值就作为fullName的值
+            //     // get什么时候被调用？1.初次读取fullName的时候。2，所依赖的数据发生变化的时候
+            //     get() {
+            //         console.log("get被调用了");
+            //         // console.log(this === vm);   // true
+            //         return this.firstName + '-' + this.lastName;
+            //     },
+            //     // set什么时候调用？当fullName被修改时。
+            //     set(value) {
+            //         console.log('set', value);
+            //         const arr = value.split('-')
+            //         this.firstName = arr[0];
+            //         this.lastName = arr[1];
+            //     }
+            // }
+
+            // 简写
+            fullName() {
+                console.log("get被调用了");
+                return this.firstName + '-' + this.lastName;
+            }
+        },
+    })
+</script>
+
+</body>
+</html>
