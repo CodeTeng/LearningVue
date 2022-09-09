@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>模拟小问题</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <button @click="updateMei">更新马冬梅信息</button>
+    <ul>
+        <li v-for="(item,index) of persons" :key="item.id">
+            {{item.name}}--{{item.age}}--{{item.sex}}
+        </li>
+    </ul>
+</div>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            persons: [
+                {id: '001', name: '马冬梅', age: 18, sex: '女'},
+                {id: '002', name: '周冬雨', age: 28, sex: '女'},
+                {id: '003', name: '周杰伦', age: 30, sex: '男'},
+                {id: '004', name: '温兆伦', age: 31, sex: '男'},
+            ]
+        },
+        methods: {
+            updateMei() {
+                //this.persons[0].name = '马老师';   //生效
+                //this.persons[0].age = 50;   //生效
+                //this.persons[0].sex = '男';  //生效
+                //this.persons[0] = {id: '001', name: '马老师', age: 50,sex: '男'};   //不生效
+                this.persons.splice(0, 1, {id: '001', name: '马老师', age: 50, sex: '男'});
+            }
+        }
+    })
+</script>
+
+</body>
+</html>
