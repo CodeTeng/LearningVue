@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>v-cloak</title>
+    <script src="../js/vue.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h2 v-cloak>{{name}}</h2>
+</div>
+<!--延迟5s收到vue.js-->
+<!--<script type="text/javascript" src="http://localhost:8080/resource/5s/vue.js"></script>-->
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            name: "Teng"
+        }
+    })
+</script>
+</body>
+</html>

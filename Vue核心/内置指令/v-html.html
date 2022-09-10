@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>v-html</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <div>你好，{{name}}</div>
+    <div v-html="str"></div>
+    <div v-html="str2"></div>
+</div>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            name: "Teng",
+            str: "<h3>你好！</h3>",
+            str2: '<a href="https://github.com/CodeTeng/">兄弟我找到你想要的资源了！</a>'
+        }
+    })
+</script>
+</body>
+</html>

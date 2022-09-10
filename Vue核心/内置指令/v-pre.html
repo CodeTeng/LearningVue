@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>v-pre</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2 v-pre>Vue其实很简单</h2>
+    <h2>当前的n值是：{{n}}</h2>
+    <button @click="n++">点我n+1</button>
+</div>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            n: 1,
+        }
+    })
+</script>
+</body>
+</html>

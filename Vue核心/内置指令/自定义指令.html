@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义指令</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    请输入内容：<input v-focus type="text">
+</div>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            n: 1,
+        },
+        directives: {
+            focus: {
+                inserted(element) {
+                    element.focus();
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>
