@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VueComponent</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="root">
+    <school></school>
+    <hello></hello>
+</div>
+<script>
+    const school = Vue.extend({
+        name: "school",
+        template: `
+          <div>
+          <h2>学校名称：{{ name }}</h2>
+          <h2>学校地址：{{ address }}</h2>
+          <button @click="showName">点我提示学校名</button>
+          </div>
+        `,
+        data() {
+            return {
+                name: "CQJTU",
+                address: "重庆市南岸",
+            }
+        },
+        methods: {
+            showName() {
+                // 组件中的this指的是VueComponent
+                console.log('showName', this);
+            }
+        }
+    });
+
+    const test = Vue.extend({
+        template: '<span>cqjtu</span>'
+    })
+
+    const hello = Vue.extend({
+        template: `
+          <div>
+          <h2>{{ msg }}</h2>
+          <test></test>
+          </div>
+        `,
+        data() {
+            return {
+                msg: "你好！",
+            }
+        },
+        components: {
+            test,
+        }
+    });
+
+    console.log('@', school);
+    console.log('#', hello);
+
+    const vm = new Vue({
+        el: "#root",
+        components: {
+            school,
+            hello
+        }
+    })
+</script>
+</body>
+</html>
