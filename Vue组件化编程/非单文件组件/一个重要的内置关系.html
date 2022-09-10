@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>一个重要的内置关系</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="root">
+    <school></school>
+</div>
+<script>
+    Vue.prototype.x = 99;
+    const school = Vue.extend({
+        name: 'school',
+        template: `
+          <div>
+          <h3>学校名称：{{ name }}</h3>
+          <h3>学校地址：{{ address }}</h3>
+          <button @click="showX">点我输出x</button>
+          </div>
+        `,
+        data() {
+            return {
+                name: "CQJTU",
+                address: "重庆",
+            }
+        },
+        methods: {
+            showX() {
+                // 能输出x
+                console.log(this.x);
+            }
+        }
+    });
+
+    const vm = new Vue({
+        el: "#root",
+        data: {
+            msg: "你好！"
+        },
+        components: {
+            school
+        }
+    });
+    console.log(vm);
+    console.log(school.prototype.__proto__ === Vue.prototype);  // true
+</script>
+</body>
+</html>

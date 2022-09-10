@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>几个注意点</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2>{{msg}}</h2>
+    <school></school>
+</div>
+<script>
+    // 定义组件
+    const school = Vue.extend({
+        name: 'school', // 组件给自己起个名字，用于在浏览器开发工具上显示
+        template: `
+            <div>
+                <h3>学校名称：{{name}}</h3>
+                <h3>学校地址：{{address}}</h3>
+            </div>
+        `,
+        data() {
+            return {
+                name: "CQJTU",
+                address: "重庆",
+            }
+        }
+    })
+
+    new Vue({
+        el: "#app",
+        data: {
+            msg: "欢迎学习Vue！",
+        },
+        components: {
+            school,
+        }
+    })
+</script>
+</body>
+</html>
