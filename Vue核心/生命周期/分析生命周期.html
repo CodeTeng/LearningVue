@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分析生命周期</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2 v-text="n"></h2>
+    <h2>当前的n值是：{{n}}</h2>
+    <button @click="add">点我n+1</button>
+    <button @click="bye">点我销毁vm</button>
+</div>
+<script>
+    new Vue({
+        el: "#app",
+        // template: '<div><h2>当前的n值是：{{n}}</h2><button @click="add">点我n+1</button></div>',
+        data: {
+            n: 1,
+        },
+        methods: {
+            add() {
+                console.log("add");
+                this.n++;
+            },
+            bye() {
+                this.$destroy();
+                console.log("bye");
+            }
+        },
+        watch: {
+            n() {
+                console.log("n变了");
+            }
+        },
+        beforeCreate() {
+            console.log("beforeCreate");
+            // console.log(this);
+            // debugger;
+        },
+        created() {
+            console.log("created");
+            // console.log(this);
+            // debugger;
+        },
+        beforeMount() {
+            console.log("beforeMount");
+            // console.log(this);
+            // document.querySelector("h2").innerText = "123";
+            // debugger;
+        },
+        mounted() {
+            console.log("mounted");
+            // console.log(this);
+            // debugger;
+        },
+        beforeUpdate() {
+            console.log("beforeUpdate");
+            // console.log(this.n);
+            // debugger;
+        },
+        updated() {
+            console.log("updated");
+            // console.log(this.n);
+            // debugger;
+        },
+        beforeDestroy() {
+            console.log("beforeDestroy");
+            // console.log(this.n);
+            // this.n = 99;   //不生效
+        },
+        destroyed() {
+            console.log("destroyed");
+        }
+    })
+</script>
+</body>
+</html>

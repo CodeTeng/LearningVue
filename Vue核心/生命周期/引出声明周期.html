@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>引出声明周期</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2 :style="{opacity}">欢迎学习Vue</h2>
+</div>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            opacity: 1
+        },
+        methods: {},
+        // 挂载 Vue完成模板的解析并把初始的真实DOM元素放入页面后调用mounted()
+        mounted() {
+            console.log(this);
+            setInterval(() => {
+                this.opacity -= 0.01;
+                if (this.opacity <= 0) this.opacity = 1
+            }, 16);
+        }
+    });
+
+    // 同步外部的定时器实现（不推荐）
+    /*setInterval(() => {
+        vm.opacity -= 0.01;
+        if (vm.opacity <= 0) vm.opacity = 1
+    }, 16);*/
+</script>
+</body>
+</html>

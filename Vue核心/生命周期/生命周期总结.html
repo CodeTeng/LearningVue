@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>生命周期总结</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2 :style="{opacity}">欢迎学习Vue</h2>
+    <button @click="opacity = 1">透明度设置为1</button>
+    <button @click="stop">点我彻底停止变换</button>
+</div>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            opacity: 1
+        },
+        methods: {
+            stop() {
+                this.$destroy();
+            }
+        },
+        mounted() {
+            console.log(this);
+            this.timer = setInterval(() => {
+                this.opacity -= 0.01;
+                if (this.opacity <= 0) this.opacity = 1;
+            }, 16);
+        },
+        beforeDestroy() {
+            clearInterval(this.timer);
+            console.log("vm即将死亡");
+        }
+    });
+</script>
+
+</body>
+</html>
