@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>基本使用</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2>{{msg}}</h2><br/>
+    <!--第三步：编写组件标签-->
+    <school></school>
+    <student></student>
+    <hello></hello>
+</div>
+
+<div id="app2">
+    <!--由于是全局注册的组件，所以可以使用-->
+    <hello></hello>
+</div>
+<script>
+    Vue.config.productionTip = false;
+    // 第一步：创建school组件
+    const school = Vue.extend({
+        // el: "#app", 定义组件的时候，一定不要写el配置项
+        // 因为最终所有的组件都要被一个vm管理，由vm决定服务哪个容器
+        template: '<div class="demo"><h3>学校名称：{{schoolName}}</h3><h3>学校地址：{{address}}<br/><button @click="showName">点我提示学校名</button></h3></div>',
+        data() {
+            return {
+                schoolName: "CQJTU",
+                address: "重庆南岸"
+            }
+        },
+        methods: {
+            showName() {
+                alert(this.schoolName);
+            }
+        },
+    });
+
+    // 创建student组件
+    const student = Vue.extend({
+        template: '<div><h3>学生姓名：{{studentName}}</h3><h3>学生年龄：{{age}}</h3></div>',
+        data() {
+            return {
+                studentName: '张三',
+                age: 18,
+            }
+        }
+    });
+
+    // 创建hello组件
+    const hello = Vue.extend({
+        template: '<div><h3>你好啊！{{name}}</h3></div>',
+        data() {
+            return {
+                name: "Teng",
+            }
+        }
+    });
+
+    // 第二部：全局注册组件
+    Vue.component('hello', hello);
+
+    // 创建vm
+    new Vue({
+        el: "#app",
+        data: {
+            msg: "你好！",
+        },
+        // 第二步：注册组件(局部注册)
+        components: {
+            school,
+            student,
+        }
+    });
+
+    new Vue({
+        el: "#app2",
+    })
+</script>
+</body>
+</html>
