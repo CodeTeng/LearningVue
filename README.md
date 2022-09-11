@@ -2446,12 +2446,971 @@ module.exports = defineConfig({
 ```
 
 ### 4.2 ref props mixin plugin scoped
+#### 4.2.1 ref属性
 
+`ref`被用来**给元素或子组件注册引用信息**（id的替代者）
 
+- 应用在`html`标签上获取的是真实`DOM元素`，应用在组件标签上获取的是组件`实例对象vc`
+
+使用方式 
+
+- 打标识：`<h1 ref="xxx"></h1>`或`<School ref="xxx"></School>`
+- 获取：`this.$refs.xxx`
+
+```vue
+<template>
+  <div id="app">
+    <h1 v-text="msg" ref="title"></h1>
+    <button ref="btn" @click="showName">点我输出上方DOM元素</button>
+    <School ref="sch"></School>
+  </div>
+</template>
+
+<script>
+// 引入组件
+import School from "@/components/School";
+
+export default {
+  name: 'App',
+  data() {
+    return {
+      msg: "欢迎学习Vue"
+    }
+  },
+  components: {
+    School,
+  },
+  methods: {
+    showName() {
+      console.log(this.$refs.title);  // 真实DOM元素
+      console.log(this.$refs.btn);  // 真实DOM元素
+      // console.log(document.getElementById("sch")); // id="sch";
+      console.log(this.$refs.sch);  // VueComponent实例对象(vc) 与当用id属性获取的不同
+    }
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
+
+![image-20220911133621093](https://teng-1310538376.cos.ap-chongqing.myqcloud.com/3718/202209111336210.png)
+
+#### 4.2.2 props配置项
+
+`props`让**组件接收外部传过来的数据** 
+
+- 传递数据`<Demo name="xxx" :age="18"/>`这里age前加`:`，通过`v-bind`使得里面的18是数字
+- 接收数据
+    - 第一种方式（只接收）`props:['name', 'age'] `
+    - 第二种方式（限制类型）`props:{name:String, age:Number}`
+    - 第三种方式（限制类型、限制必要性、指定默认值） 
+
+```json
+props:{
+    name: {
+        type: String,	 // 类型
+        required: true,// 必要性
+        default: 'Teng'// 默认值
+    }
+}
+```
+
+**备注**：`props`是只读的，Vue底层会监测你对`props`的修改，如果进行了修改，就会发出警告，若业务需求确实需要修改，那么请复制
+
+`props`的内容到`data`中，然后去修改`data`中的数据
+
+```vue
+<template>
+  <div id="demo">
+    <h1>{{ msg }}</h1>
+    <h2>学生姓名：{{ name }}</h2>
+    <h2>学生性别：{{ sex }}</h2>
+    <h2>学生年龄：{{ myAge + 1 }}</h2>
+    <button @click="updateAge">尝试修改收到的年龄</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Student",
+  data() {
+    console.log(this);
+    return {
+      msg: "欢迎进行学习！",
+      myAge: this.age,  // props的优先级更高
+    }
+  },
+  methods: {
+    updateAge() {
+      this.myAge++; // 进行修改
+    }
+  },
+  // 简单声明接受
+  props: ['name', 'sex', 'age'],
+  // 接受的同时对数据进行类型限制
+  /*props: {
+    name: String,
+    sex: String,
+    age: Number,
+  }*/
+  // 接受的同时对数据进行类型限制+默认值的指定+必要性的限制
+  /*props: {
+    name: {
+      type: String, // nane类型
+      required: true, // 名字是必须的
+    },
+    age: {
+      type: Number,
+      default: 99,  // 默认值
+    },
+    sex: {
+      type: String,
+      required: true,
+    }
+  }*/
+}
+</script>
+
+<style scoped>
+#demo {
+  background: skyblue;
+}
+</style>
+```
+
+#### 4.2.3 mixin混入
+
+**功能：可以把多个组件共用的配置提取成一个混入对象** 
+
+使用方式
+
+- 定义混入
+
+```js
+const mixin = {
+    data() {....},
+    methods: {....}
+    ....
+}
+```
+
+- 使用混入
+    - 全局混入`Vue.mixin(xxx)`
+    - 局部混入`mixins:['xxx']`
+
+备注
+
+- 组件和混入对象含有同名选项时，这些选项将以恰当的方式进行“合并”，**在发生冲突时以组件优先**
+
+```js
+var mixin = {
+	data: function () {
+		return {
+    		message: 'hello',
+            foo: 'abc'
+    	}
+  	}
+}
+
+new Vue({
+  	mixins: [mixin],
+  	data () {
+    	return {
+      		message: 'goodbye',
+            	bar: 'def'
+    	}
+    },
+  	created () {
+    	console.log(this.$data)
+    	// => { message: "goodbye", foo: "abc", bar: "def" }
+  	}
+})
+```
+
+- **同名生命周期钩子将合并为一个数组，因此都将被调用。另外，混入对象的钩子将在组件自身钩子之前调用**
+
+```js
+var mixin = {
+  	created () {
+    	console.log('混入对象的钩子被调用')
+  	}
+}
+
+new Vue({
+  	mixins: [mixin],
+  	created () {
+    	console.log('组件钩子被调用')
+  	}
+})
+
+// => "混入对象的钩子被调用"
+// => "组件钩子被调用"
+```
+
+`src/mixin.js`
+
+```js
+export const mixin = {
+    methods: {
+        showName() {
+            alert(this.name);
+        }
+    },
+    mounted() {
+        console.log("你好啊！");
+    }
+}
+
+export const mixin2 = {
+    data() {
+        return {
+            x: 100,
+            y: 200,
+        }
+    }
+}
+```
+
+`src/components/School.vue`
+
+```vue
+
+```
+
+`src/components/Student.vue`
+
+```vue
+<template>
+  <div id="demo">
+    <h2 @click="showName">学校名称：{{ name }}</h2>
+    <h2>学校地址：{{ address }}</h2>
+  </div>
+</template>
+
+<script>
+// 引入一个混合
+import {mixin} from "@/components/mixin";
+import {mixin2} from "@/components/mixin";
+
+export default {
+  name: "Student",
+  data() {
+    console.log(this);
+    return {
+      name: "CQJTU",
+      address: "重庆市南岸区",
+      x: 666, // 当原数据与混合引入有相同的名称时，以原数据为主 即不会破坏原有数据
+    }
+  },
+  mounted() {
+    console.log("你好啊！！！！"); // 当混合也引入时 原数据的会后出现
+  },
+  mixins: [mixin, mixin2]
+}
+</script>
+
+<style scoped>
+#demo {
+  background: skyblue;
+}
+</style>
+```
+
+`src/App.vue`
+
+```vue
+<template>
+  <div id="app">
+    <Student />
+    <hr/>
+    <School/>
+    <hr/>
+  </div>
+</template>
+
+<script>
+import Student from "@/components/Student";
+import School from "@/components/School";
+
+export default {
+  name: 'App',
+  components: {
+    Student,
+    School
+  },
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
+
+`src/main.js`
+
+```js
+// 该文件是整个项目的入口文件
+import Vue from 'vue' // 引入Vue
+import App from './App.vue' // 引入App组件。它是所有组件的父组件
+// import {mixin, mixin2} from "@/components/mixin";
+
+Vue.config.productionTip = false
+// 全局混入
+// Vue.mixin(mixin);
+// Vue.mixin(mixin2);
+
+new Vue({
+    render: h => h(App),    // render函数完成了这个功能：将App组件放入容器中
+}).$mount('#app')
+```
+
+#### 4.2.4 plugin插件
+
+**功能：用于增强Vue**
+
+本质：包含`install`方法的一个对象，`install`的第一个参数是`Vue`，第二个以后的参数是插件使用者传递的数据
+
+定义插件（见下 src/plugin.js）
+
+使用插件：`Vue.use()`
+
+`src/plugin.js`
+
+```js
+export default {
+    install(Vue, x, y, z) {
+        console.log(x, y, z);
+        // 定义全局过滤器
+        Vue.filter('mySlice', function (value) {
+            return value.slice(0, 4);
+        })
+
+        // 定义全局指令
+        Vue.directive('fbind', {
+            // 指令与元素成功绑定时（一上来）
+            bind(element, binding) {
+                element.value = binding.value;
+            }, // 指令所在元素被插入页面是
+            inserted(element, binding) {
+                element.focus();
+            }, // 指令所在的模板被重新解析时
+            update(element, binding) {
+                element.value = binding.value;
+            }
+        })
+
+        // 定义混入
+        Vue.mixin({
+            data() {
+                return {
+                    x: 100, y: 200,
+                }
+            }
+        })
+
+        // 给Vue原型添加一个方法（vm和vc就都能用了）
+        Vue.prototype.hello = () => {
+            alert("你好！")
+        };
+    }
+}
+```
+
+`src/main.js`
+
+```js
+import Vue from 'vue' // 引入Vue
+import App from './App.vue' // 引入App组件。它是所有组件的父组件
+
+// 引入插件
+import plugins from "@/plugins";
+
+Vue.config.productionTip = false
+
+// 使用插件
+Vue.use(plugins, 1, 2, 3);
+
+new Vue({
+    render: h => h(App),    // render函数完成了这个功能：将App组件放入容器中
+}).$mount('#app')
+```
+
+`src/components/School.vue`
+
+```vue
+<template>
+  <div>
+    <h2>学校名称：{{ name | mySlice }}</h2>
+    <h2>学校地址：{{ address }}</h2>
+    <button @click="test">点我测试Vue插件方法</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Student",
+  data() {
+    return {
+      name: "CQJTU哈哈哈哈",
+      address: "重庆市南岸区",
+    }
+  },
+  methods: {
+    test() {
+      this.hello();
+    }
+  }
+}
+</script>
+
+<style scoped>
+</style>
+```
+
+`src/components/Student.vue`
+
+```vue
+<template>
+  <div>
+    <h2>学生姓名：{{ name }}</h2>
+    <h2>学生性别：{{ sex }}</h2>
+    <!--测试插件-->
+    <input type="text" v-fbind:value="name">
+  </div>
+</template>
+
+<script>
+
+export default {
+  name: "Student",
+  data() {
+    return {
+      name: "张三",
+      sex: "男",
+    }
+  },
+}
+</script>
+
+<style scoped>
+</style>
+```
+
+![image-20220911144910269](https://teng-1310538376.cos.ap-chongqing.myqcloud.com/3718/202209111449565.png)
+
+![image-20220911144949756](https://teng-1310538376.cos.ap-chongqing.myqcloud.com/3718/202209111449872.png)
+
+#### 4.2.5 scoped样式
+
+**作用：让样式在局部生效，防止冲突**
+
+写法：`<style scoped>`
+
+> Vue中的webpack并没有安装最新版，导致有些插件也不能默认安装最新版，如 npm i less-loader@10，而不是最新版
+
+一些指令
+
+```
+npm view webpack versions	// 查看webpack的所有版本
+npm view less-loader versions	// 查看less的所有版本
+```
+
+`src/components/School.vue`
+
+```vue
+<template>
+  <div class="demo">
+    <h2 class="title">学校名称：{{ name }}</h2>
+    <h2>学校地址：{{ address }}</h2>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Student",
+  data() {
+    return {
+      name: "CQJTU",
+      address: "重庆市南岸区",
+    }
+  }
+}
+</script>
+
+<style scoped>
+.demo {
+  background-color: skyblue;
+}
+</style>
+```
+
+`src/components/Student.vue`
+
+```vue
+<template>
+  <div class="demo">
+    <h2 class="title">学生姓名：{{ name }}</h2>
+    <h2 class="teng">学生性别：{{ sex }}</h2>
+  </div>
+</template>
+
+<script>
+
+export default {
+  name: "Student",
+  data() {
+    return {
+      name: "张三",
+      sex: "男",
+    }
+  },
+}
+</script>
+
+<style scoped lang="less">
+.demo {
+  background-color: pink;
+
+  .teng {
+    font-size: 40px;
+  }
+}
+</style>
+```
+
+`src/App.vue`
+
+```vue
+<template>
+  <div>
+    <h1 class="title">你好啊</h1>
+    <Student/>
+    <School/>
+  </div>
+</template>
+
+<script>
+import Student from "@/components/Student";
+import School from "@/components/School";
+
+export default {
+  name: 'App',
+  components: {
+    Student,
+    School
+  },
+}
+</script>
+
+<style scoped>
+.title {
+  color: red;
+}
+</style>
+```
+
+![image-20220911151152216](https://teng-1310538376.cos.ap-chongqing.myqcloud.com/3718/202209111511283.png)
 
 ### 4.3 Todo-List案例
+**组件化编码流程**
 
+1. 拆分**静态组件**：组件要按照功能点拆分，命名不要与html元素冲突
+2. 实现**动态组件**：考虑好数据的存放位置，数据是一个组件在用，还是一些组件在用
+    1. 一个组件在用：放在组件自身即可
+    2. 一些组件在用：放在他们共同的父组件上（状态提升）
+3. **实现交互**：从绑定事件开始
 
+`props`适用于
+
+- 父组件 ==> 子组件 通信
+- 子组件 ==> 父组件 通信（要求父组件先给子组件一个函数）
+
+使用`v-model`时要切记：`v-model`绑定的值不能是`props`传过来的值，因为`props`是不可以修改的
+
+`props`传过来的若是对象类型的值，修改对象中的属性时`Vue`不会报错，但不推荐这样做。
+
+![image-20220911151959586](https://teng-1310538376.cos.ap-chongqing.myqcloud.com/3718/202209111519685.png)
+
+组件之间的传递图
+
+![image-20220911161349925](https://teng-1310538376.cos.ap-chongqing.myqcloud.com/3718/202209111613997.png)
+
+`src/App.vue`
+
+```vue
+<template>
+  <div id="root">
+    <div class="todo-container">
+      <div class="todo-wrap">
+        <MyHeader :addTodo="addTodo"/>
+        <List :todos="todos"
+              :checkTodo="checkTodo"
+              :deleteTodo="deleteTodo"/>
+        <MyFooter :todos="todos"
+                  :checkAllTodo="checkAllTodo"
+                  :clearAllTodo="clearAllTodo"/>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import MyHeader from "@/components/MyHeader";
+import MyFooter from "@/components/MyFooter";
+import List from "@/components/List";
+
+export default {
+  name: 'App',
+  components: {MyHeader, MyFooter, List},
+  data() {
+    return {
+      todos: [
+        {id: '001', title: '吃饭', done: true},
+        {id: '002', title: '睡觉', done: false},
+        {id: '003', title: '打游戏', done: true},
+      ]
+    }
+  },
+  methods: {
+    // 添加一个todo
+    addTodo(todoObj) {
+      // console.log("我是APP组件，我收到了数据", todoObj);
+      this.todos.unshift(todoObj)
+    },
+    // 勾选or取消勾选一个todo
+    checkTodo(id) {
+      this.todos.forEach((todo) => {
+        if (todo.id === id) todo.done = !todo.done;
+      })
+    },
+    // 删除一个todo
+    deleteTodo(id) {
+      this.todos = this.todos.filter(todo => todo.id !== id)
+    },
+    // 全选or取消全选
+    checkAllTodo(done) {
+      this.todos.forEach(todo => todo.done = done)
+    },
+    // 清除所有已经完成的todo
+    clearAllTodo() {
+      if (confirm("确定要清除吗？")) this.todos = this.todos.filter(todo => !todo.done);
+    }
+  }
+}
+</script>
+
+<style>
+body {
+  background: #fff;
+}
+
+.btn {
+  display: inline-block;
+  padding: 4px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+.btn-danger {
+  color: #fff;
+  background-color: #da4f49;
+  border: 1px solid #bd362f;
+}
+
+.btn-danger:hover {
+  color: #fff;
+  background-color: #bd362f;
+}
+
+.todo-container {
+  width: 600px;
+  margin: 0 auto;
+}
+
+.todo-container .todo-wrap {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+</style>
+```
+
+`src/MyHeader.vue`
+
+```vue
+<template>
+  <div class="todo-header">
+    <input type="text" placeholder="请输入你的任务名称，按回车键确认" v-model="title" @keyup.enter="add"/>
+  </div>
+</template>
+
+<script>
+import {nanoid} from 'nanoid';
+
+export default {
+  name: "MyHeader",
+  props: ['addTodo'],
+  data() {
+    return {
+      title: '',
+    }
+  },
+  methods: {
+    add() {
+      // 校验数据
+      if (!this.title.trim()) return alert("输入不能为空");
+      // 将用户的输入包装成为一个todo对象
+      const todoObj = {id: nanoid(), title: this.title, done: false};
+      // 通知APP组件去添加一个todo对象
+      this.addTodo(todoObj);
+      // 清空输入
+      this.title = '';
+    }
+  }
+}
+</script>
+
+<style scoped>
+.todo-header input {
+  width: 560px;
+  height: 28px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 7px;
+}
+
+.todo-header input:focus {
+  outline: none;
+  border-color: rgba(82, 168, 236, 0.8);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+</style>
+```
+
+`src/List.vue`
+
+```vue
+<template>
+  <ul class="todo-main">
+    <Item v-for="todoObj in todos"
+          :key="todoObj.id"
+          :todo="todoObj"
+          :checkItemTodo="checkTodo"
+          :deleteItemTodo="deleteTodo"/>
+  </ul>
+</template>
+
+<script>
+import Item from "@/components/Item";
+
+export default {
+  name: "List",
+  components: {Item},
+  props: ['todos', 'checkTodo', 'deleteTodo'],
+}
+</script>
+
+<style scoped>
+.todo-main {
+  margin-left: 0px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 0px;
+}
+
+.todo-empty {
+  height: 40px;
+  line-height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding-left: 5px;
+  margin-top: 10px;
+}
+</style>
+```
+
+`src/Item.vue`
+
+```vue
+<template>
+  <li>
+    <label>
+      <input type="checkbox" :checked="todo.done" @change="handleCheck(todo.id)"/>
+      <!--如下代码也能实现功能，但是不太推荐，因为有点违反原则，因为修改了props-->
+      <!--      <input type="checkbox" v-model="todo.done">-->
+      <span>{{ todo.title }}</span>
+    </label>
+    <button class="btn btn-danger" @click="handleDelete(todo.id)">删除</button>
+  </li>
+</template>
+
+<script>
+export default {
+  name: "Item",
+  // 声明接受todo对象
+  props: ['todo', 'checkItemTodo', 'deleteItemTodo'],
+  methods: {
+    // 勾选or取消勾选
+    handleCheck(id) {
+      // 通知APP组件将对应的todo对象的done值取反
+      this.checkItemTodo(id);
+    },
+    // 删除
+    handleDelete(id) {
+      if (confirm('确定删除吗？')) {
+        // 通知APP组件删除对应的todo
+        this.deleteItemTodo(id);
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+li {
+  list-style: none;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+li label {
+  float: left;
+  cursor: pointer;
+}
+
+li label li input {
+  vertical-align: middle;
+  margin-right: 6px;
+  position: relative;
+  top: -1px;
+}
+
+li button {
+  float: right;
+  display: none;
+  margin-top: 3px;
+}
+
+li:before {
+  content: initial;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+li:hover {
+  background-color: #ddd;
+}
+
+li:hover button {
+  display: block;
+}
+</style>
+```
+
+`src/MyFooter.vue`
+
+```vue
+<template>
+  <div class="todo-footer" v-show="total">
+    <label>
+      <input type="checkbox" :checked="isAll" @click="checkAll"/>
+      <!--用以下方法需要使用完全的计算属性写法 get和set-->
+      <!--      <input type="checkbox" v-model="isAll">-->
+    </label>
+    <span>
+      <span>已完成{{ doneTotal }}</span> / 全部{{ total }}
+    </span>
+    <button class="btn btn-danger" @click="clearAll">清除已完成任务</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "MyFooter",
+  props: ['todos', 'checkAllTodo', 'clearAllTodo'],
+  computed: {
+    total() {
+      return this.todos.length;
+    },
+    doneTotal() {
+      return this.todos.reduce((pre, current) => pre + (current.done ? 1 : 0), 0);
+    },
+    isAll() {
+      return this.total === this.doneTotal && this.total > 0;
+    }
+  },
+  methods: {
+    checkAll(event) {
+      this.checkAllTodo(event.target.checked);
+    },
+    clearAll() {
+      this.clearAllTodo();
+    }
+  }
+}
+</script>
+
+<style scoped>
+.todo-footer {
+  height: 40px;
+  line-height: 40px;
+  padding-left: 6px;
+  margin-top: 5px;
+}
+
+.todo-footer label {
+  display: inline-block;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.todo-footer label input {
+  position: relative;
+  top: -1px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.todo-footer button {
+  float: right;
+  margin-top: 5px;
+}
+</style>
+```
+
+![image-20220911173235186](https://teng-1310538376.cos.ap-chongqing.myqcloud.com/3718/202209111732253.png)
 
 ### 4.4 本地存储与自定义事件
 
