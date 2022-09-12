@@ -1,5 +1,5 @@
 <template>
-  <div class="demo">
+  <div class="school">
     <h2 class="title">学生姓名：{{ name }}</h2>
     <h2 class="teng">学生性别：{{ sex }}</h2>
   </div>
@@ -19,7 +19,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-.demo {
+.school {
   background-color: pink;
 
   .teng {
