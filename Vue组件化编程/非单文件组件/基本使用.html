@@ -24,7 +24,7 @@
     const school = Vue.extend({
         // el: "#app", 定义组件的时候，一定不要写el配置项
         // 因为最终所有的组件都要被一个vm管理，由vm决定服务哪个容器
-        template: '<div class="demo"><h3>学校名称：{{schoolName}}</h3><h3>学校地址：{{address}}<br/><button @click="showName">点我提示学校名</button></h3></div>',
+        template: '<div class="school"><h3>学校名称：{{schoolName}}</h3><h3>学校地址：{{address}}<br/><button @click="showName">点我提示学校名</button></h3></div>',
         data() {
             return {
                 schoolName: "CQJTU",
