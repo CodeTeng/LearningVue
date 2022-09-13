@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <!-- 针对IE浏览器的特殊配置，含义是让IE浏览器以最高渲染级别渲染页面 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 开启移动端的理想端口 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 配置页签图标 -->
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+
+    <!-- 引入bootstrap样式 -->
+    <link rel="stylesheet" href="<%= BASE_URL %>css/bootstrap.css">
+
+    <!-- 配置网页标题 -->
+    <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+<!-- 容器 -->
+<div id="app"></div>
+</body>
+</html>
