@@ -15,7 +15,8 @@
     "pubsub-js": "^1.9.4",
     "animate.css": "^4.1.1",
     "axios": "^0.27.2",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "vue-router": "^3.6.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
